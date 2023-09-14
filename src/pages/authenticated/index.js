@@ -11,12 +11,16 @@ const Index = () => {
     const auth = getAuth();
 
     useEffect(()=>{
+        if(auth.currentUser?.emailVerified==false){
+            router.push("/email-verification-send");
+        }
         const timerId = setTimeout(()=>{
             if(auth.currentUser){
                 login(auth.currentUser);
                 setLoading(false);
             }
         },[2000]);
+        
         return ()=>clearTimeout(timerId);
     },[])
 

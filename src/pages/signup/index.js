@@ -4,12 +4,12 @@ import AppInput from "../../components/AppInput";
 import AppButton from "../../components/AppButton";
 import Axiosinstance from "../../utils/AxiosInstance";
 import { useAuth } from "../../hooks/useAuth";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import axiosInstance from "../../utils/AxiosInstance";
 import publicRoute from "../../utils/publicRoutes";
 import { default as NLink } from "next/link";
 import { Button, Card, Container, Link, Spacer, Text } from "@nextui-org/react";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
 
 const renderField = ({ input, label, meta: { touched, error, warning } }) => (
   <div>
@@ -20,6 +20,7 @@ const renderField = ({ input, label, meta: { touched, error, warning } }) => (
 const Index = () => {
   const { login } = useAuth();
   const [error, setError] = useState(undefined);
+  const router = useRouter();
 
   let onSubmit = async (data) => {
     if (data && data.password !== data.confirmPassword) {
@@ -27,8 +28,9 @@ const Index = () => {
     } else {
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, data.email, data.password)
-        .then((userCredential) => {
-          login(userCredential);
+        .then( async (userCredential) => {
+          await sendEmailVerification(userCredential.user);
+          router.push("/email-verification-send")
         })
         .catch((error) => {
           setError(error.message);

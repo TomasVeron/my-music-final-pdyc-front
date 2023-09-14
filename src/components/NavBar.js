@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Button, Link, Text, Card, Radio, Dropdown, Avatar, Container } from "@nextui-org/react";
+import { Navbar, Button, Link, Text, Card, Radio, Dropdown, Avatar, Container, User } from "@nextui-org/react";
 import { default as NLink } from "next/link";
 import LogoutButton from "./LogoutButton";
 import { useAuth } from "@/hooks/useAuth";
@@ -56,7 +56,7 @@ const NavBar = () => {
           <Dropdown placement="bottom-right">
             <Navbar.Item>
               <Dropdown.Trigger>
-                <Avatar squared  src={user?.photoURL} />
+                {user?.photoURL ? <User bordered color="secondary" src={user?.photoURL} /> : <Avatar squared color="gradient" text={user?.email} />}
               </Dropdown.Trigger>
             </Navbar.Item>
             <Dropdown.Menu aria-label="User menu actions" color="secondary" onAction={(actionKey) => console.log({ actionKey })}>
@@ -65,7 +65,7 @@ const NavBar = () => {
                   Signed in as
                 </Text>
                 <Text b color="inherit" css={{ d: "flex" }}>
-                  {user.email}
+                  {user?.displayName || user?.email}
                 </Text>
               </Dropdown.Item>
               <Dropdown.Item key="logout" withDivider color="error">
